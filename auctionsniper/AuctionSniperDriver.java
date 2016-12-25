@@ -1,3 +1,5 @@
+package auctionsniper;
+
 import static org.hamcrest.Matchers.equalTo;
 
 import auctionsniper.ui.MainWindow;

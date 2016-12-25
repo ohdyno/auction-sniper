@@ -1,3 +1,6 @@
+package auctionsniper;
+
+import auctionsniper.main.Main;
 import auctionsniper.ui.MainWindow;
 
 /**

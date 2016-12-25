@@ -1,3 +1,5 @@
+package auctionsniper.main;
+
 import auctionsniper.ui.MainWindow;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
@@ -8,7 +10,7 @@ import org.jivesoftware.smack.packet.Message;
 
 /**
  * Main
- * Responsibility:
+ * Responsibility: Starts the Auction Sniper application.
  */
 public class Main {
 
@@ -26,17 +28,17 @@ public class Main {
   @SuppressWarnings("unused")
   private Chat notToBeGCed;
 
+  public static void main(final String... args) throws Exception {
+    final Main main = new Main();
+    main.joinAuction(connectTo(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]), args[ARG_ITEM_ID]);
+  }
+
   public Main() throws InvocationTargetException, InterruptedException {
     startUserInterface();
   }
 
   private void startUserInterface() throws InvocationTargetException, InterruptedException {
     SwingUtilities.invokeAndWait(() -> ui = new MainWindow());
-  }
-
-  public static void main(final String... args) throws Exception {
-    final Main main = new Main();
-    main.joinAuction(connectTo(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]), args[ARG_ITEM_ID]);
   }
 
   private void joinAuction(final XMPPConnection connection, final String itemId) throws XMPPException {
