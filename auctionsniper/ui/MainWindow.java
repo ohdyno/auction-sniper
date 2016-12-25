@@ -1,7 +1,6 @@
 package auctionsniper.ui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
@@ -25,7 +24,6 @@ public class MainWindow extends JFrame {
     setName(MAIN_WINDOW_NAME);
     add(sniperStatus);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    setSize(new Dimension(300, 100));
     setVisible(true);
   }
 
