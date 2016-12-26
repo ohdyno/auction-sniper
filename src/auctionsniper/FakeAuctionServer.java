@@ -1,9 +1,11 @@
 package auctionsniper;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Message;
 
 /**
  * FakeAuctionServer
@@ -39,19 +41,36 @@ public class FakeAuctionServer {
     );
   }
 
+  public void reportPrice(final int currentPrice, final int minimumIncrement, final String winningBidder)
+      throws XMPPException {
+    final String message = AuctionMessageFactory.createPrice(currentPrice, minimumIncrement, winningBidder);
+    currentChat.sendMessage(message);
+  }
+
   public String getItemId() {
     return itemId;
   }
 
-  public void hasReceivedJoinRequestFromSniper() throws InterruptedException {
-    messageListener.receivesAMessage();
-  }
-
   public void announceClosed() throws XMPPException {
-    currentChat.sendMessage(new Message());
+    currentChat.sendMessage(AuctionMessageFactory.createClose());
   }
 
   public void stop() {
     connection.disconnect();
   }
+
+  //region Expectations for tests
+  public void hasReceivedJoinRequestFromSniper(final String sniperId) throws InterruptedException {
+    receivesAMessageMatching(sniperId, AuctionMessageFactory.createJoin());
+  }
+
+  public void hasReceivedBid(final int bid, final String sniperId) throws InterruptedException {
+    receivesAMessageMatching(sniperId, AuctionMessageFactory.createBid(bid));
+  }
+
+  private void receivesAMessageMatching(final String sniperId, final String message) throws InterruptedException {
+    messageListener.receivesAMessage(equalTo(message));
+    assertThat(currentChat.getParticipant(), equalTo(sniperId));
+  }
+  //endregion
 }

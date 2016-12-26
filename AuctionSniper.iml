@@ -21,5 +21,6 @@
     <orderEntry type="library" name="org.igniterealtime.smack:smack:3.2.1" level="project" />
     <orderEntry type="library" name="com.googlecode.windowlicker:windowlicker-core:r268" level="project" />
     <orderEntry type="library" name="org.igniterealtime.smack:smackx:3.2.1" level="project" />
+    <orderEntry type="library" name="org.mockito:mockito-core:2.4.1" level="project" />
   </component>
 </module>

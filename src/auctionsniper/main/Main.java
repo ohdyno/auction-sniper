@@ -1,18 +1,20 @@
 package auctionsniper.main;
 
+import auctionsniper.AuctionMessageFactory;
 import auctionsniper.ui.MainWindow;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Message;
 
 /**
  * Main
  * Responsibility: Starts the Auction Sniper application.
  */
-public class Main {
+public class Main implements AuctionEventListener {
 
   private static final int ARG_HOSTNAME = 0;
   private static final int ARG_USERNAME = 1;
@@ -42,13 +44,22 @@ public class Main {
   }
 
   private void joinAuction(final XMPPConnection connection, final String itemId) throws XMPPException {
+    disconnectWhenUICloses(connection);
+
     final Chat chat = connection.getChatManager().createChat(
         auctionId(itemId, connection),
-        (Chat aChat, Message message) -> SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST))
-    );
-
+        new AuctionMessageTranslator(this));
     this.notToBeGCed = chat;
-    chat.sendMessage(new Message());
+    chat.sendMessage(AuctionMessageFactory.createJoin());
+  }
+
+  private void disconnectWhenUICloses(final XMPPConnection connection) {
+    ui.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosed(final WindowEvent e) {
+        connection.disconnect();
+      }
+    });
   }
 
   private static String auctionId(final String itemId, final XMPPConnection connection) {
@@ -62,4 +73,18 @@ public class Main {
     connection.login(username, password, AUCTION_RESOURCE);
     return connection;
   }
+
+  //region AuctionEventListener interface
+  @Override
+  public void auctionClosed() {
+    SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST));
+  }
+
+  @Override
+  public void currentPrice(final int currentBid, final int minimumIncrement)
+      throws XMPPException {
+    SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_BIDDING));
+    notToBeGCed.sendMessage(AuctionMessageFactory.createBid(currentBid + minimumIncrement));
+  }
+  //endregion
 }
