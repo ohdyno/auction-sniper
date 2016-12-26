@@ -60,3 +60,5 @@ Therefore, the walking skeleton should flush out:
 - How to connect to the XMPP server
 - What kind of infrastructure design is necessary to handle these activities.  The infrastructure may change, of course,
 as we attempt to add newer features.
+
+## 
