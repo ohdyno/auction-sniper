@@ -33,7 +33,7 @@ public class AuctionSniperEndToEndTest {
     auction.reportPrice(1000, 98, "other bidder");
     application.hasShowSniperIsBidding();
 
-//    auction.hasReceivedBid(1000 + 98, ApplicationRunner.SNIPER_XMPP_ID);
+    auction.hasReceivedBid(1000 + 98, ApplicationRunner.SNIPER_XMPP_ID);
 
     auction.announceClosed();
     application.showsSniperHasLostAuction();
